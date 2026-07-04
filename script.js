@@ -56,14 +56,25 @@ function render(interp){
     ctx.restore();
 }
 
-
-
+let lastTime = performance.now();
+let delta = 0;
+let Fps = 60;
+const timePerFrame = 1000/Fps;
 function gameLoop(){
-
+    console.log("Game is running");
+    delta+= (currentTime - lastTime) / timePerFrame;
+    lastTime = currentTime;
+    if(delta > 10){
+        delta  = 1;
+    }
+    while(delta >= 1){
+        updateLogic();
+        delta--;
+    }
+    render(delta);
+    requestAnimationFrame(gameLoop);
 }
 
-if (a === b){
-    console.log("A = B");
-}
+
 enemies.push({ x: 50, y: 50, radius: 12, speed: 2, color: "red" });
 requestAnimationFrame(gameLoop);
