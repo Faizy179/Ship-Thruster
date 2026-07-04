@@ -29,7 +29,24 @@ document.addEventListener(
 );
 
 function updateLogic(){
+    if(isThrusting){
+        player.x += Math.cos(player.angle) * player.speed;
+        player.y += Math.sin(player.angle) *player.speed;
+    }
+    else{
+        player.angle+=player.spinSpeed
+    }
+    player.x = Math.max(player.radius,Math.min(canvas.width-player.radius,player.x)); 
+    player.y = Math.max(player.radius,Math.min(canvas.height - player.radius, player.y));
 
+    //enemy logic
+    enemies.forEach(
+        enemy =>{
+            const  angleToPlayere  = Math.atan2((player.y-enemy.y),(player.x-enemy.x));
+            enemy.x = Math.cos(angleToPlayere) *enemy.speed; 
+            enemy.y = Math.sin(angleToPlayere) * enemy.speed;
+        }
+    );
 }
 
 function render(interp){
