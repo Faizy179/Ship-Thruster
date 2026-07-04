@@ -11,6 +11,7 @@ const player = {
 }
 let  enemies = [];
 let isThrusting = false;
+
 document.addEventListener(
     "keydown",(e) => {
         if(e.code === "Space"){
@@ -18,6 +19,7 @@ document.addEventListener(
         }
     }
 );
+
 document.addEventListener(
     "keyup",(e) => {
         if(e.code === "Space"){
@@ -25,3 +27,43 @@ document.addEventListener(
         }
     }
 );
+
+function updateLogic(){
+
+}
+
+function render(interp){
+    ctx.clearRect(0,0,canvas.width,canvas.height);
+    enemies.forEach(
+        enemy => {
+            ctx.fillStyle = enemy.color;
+            ctx.beginPath();
+            ctx.arc(enemy.x,enemy.y,enemy.radius,0,(Math.PI * 2));
+            ctx.fill();
+        }
+    );
+    ctx.save();
+    ctx.translate(player.x,player.y);
+    ctx.rotate(player.angle);
+
+    ctx.fillStyle = player.color;
+    ctx.beginPath();
+    ctx.moveTo(20,0);
+    ctx.lineTo(-10,10);
+    ctx.lineTo(-10,-10);
+    ctx.closePath();
+    ctx.fill();
+    ctx.restore();
+}
+
+
+
+function gameLoop(){
+
+}
+
+if (a === b){
+    console.log("A = B");
+}
+enemies.push({ x: 50, y: 50, radius: 12, speed: 2, color: "red" });
+requestAnimationFrame(gameLoop);
