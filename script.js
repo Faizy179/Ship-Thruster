@@ -1,4 +1,4 @@
-const canvas = document.getElementById("main-cavas");
+const canvas = document.getElementById("main-canvas");
 const ctx = canvas.getContext("2d");
 const player = {
     x: canvas.width/2,
@@ -43,8 +43,8 @@ function updateLogic(){
     enemies.forEach(
         enemy =>{
             const  angleToPlayere  = Math.atan2((player.y-enemy.y),(player.x-enemy.x));
-            enemy.x = Math.cos(angleToPlayere) *enemy.speed; 
-            enemy.y = Math.sin(angleToPlayere) * enemy.speed;
+            enemy.x += Math.cos(angleToPlayere) *enemy.speed; 
+            enemy.y += Math.sin(angleToPlayere) * enemy.speed;
         }
     );
 }
@@ -77,7 +77,7 @@ let lastTime = performance.now();
 let delta = 0;
 let Fps = 60;
 const timePerFrame = 1000/Fps;
-function gameLoop(){
+function gameLoop(currentTime){
     console.log("Game is running");
     delta+= (currentTime - lastTime) / timePerFrame;
     lastTime = currentTime;
