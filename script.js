@@ -16,7 +16,7 @@ let bullets = [];
 let lastShotTime = 0;
 let lastSpawnTime = 0;
 let lastFireTime = 0;
-const SHOOT_COOLDOWN = 700; //1 second cooldown
+const SHOOT_COOLDOWN = 700; //0.7 second cooldown
 const SPAWN_COOLDOWN = 1500; //1.5 second cooldown
 let keyDownTime = 0;
 document.addEventListener(
@@ -60,9 +60,17 @@ function updateLogic(currentTime){
     else if(currentTime-lastFireTime > 200){
         player.angle+=player.spinSpeed
     }
-    player.x = Math.max(player.radius,Math.min(canvas.width-player.radius,player.x)); 
-    player.y = Math.max(player.radius,Math.min(canvas.height - player.radius, player.y));
+    if (player.x > canvas.width + player.radius) {
+        player.x = -player.radius; 
+    } else if (player.x < -player.radius) {
+        player.x = canvas.width + player.radius;
+    }
 
+    if (player.y > canvas.height + player.radius) {
+        player.y = -player.radius;
+    } else if (player.y < -player.radius) {
+        player.y = canvas.height + player.radius;
+    }
     //enemy logic
     enemies.forEach(
         enemy =>{
