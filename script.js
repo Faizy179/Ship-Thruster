@@ -17,27 +17,14 @@ let lastShotTime = 0;
 let lastSpawnTime = 0;
 const SHOOT_COOLDOWN = 1000; //1 second cooldown
 const SPAWN_COOLDOWN = 1500; //1.5 second cooldown
-
+let keyDownTime = 0;
 document.addEventListener(
     "keydown",(e) => {
         if(e.code === "Space"){
-            const now = performance.now();
-            if(now - lastSpacePress < 300){
-                bullets.push(
-                    {
-                        x: player.x,
-                        y: player.y,
-                        radius: 5,
-                        speed:10,
-                        angle:player.angle,
-                        color:"yellow"
-                    }
-                );
-                lastSpacePress = 0;
+            if(e.repeat){
+                return;
             }
-            else{
-                lastSpacePress = now;
-            }
+            keyDownTime = performance.now();
             isThrusting = true;
         }
     }
@@ -47,6 +34,18 @@ document.addEventListener(
     "keyup",(e) => {
         if(e.code === "Space"){
             isThrusting = false;
+            const keyUpTime = performance.now();
+            if(keyUpTime -keyDownTime < 200){
+                bullets.push({
+                    x: player.x,
+                    y: player.y,
+                    radius: 5,
+                    speed: 10,
+                    angle: player.angle, 
+                    color: "yellow"
+                }
+             );
+            }
         }
     }
 );
@@ -107,7 +106,7 @@ function updateLogic(currentTime){
                 x:spawnX,
                 y:spawnY,
                 radius:12,
-                speed:2,
+                speed:1.5,
                 color:"red"
             }
         );
@@ -131,7 +130,7 @@ function updateLogic(currentTime){
             }
         }
     }
-}lastShotTime
+}
 function render(interp){
     ctx.clearRect(0,0,canvas.width,canvas.height);
     enemies.forEach(
