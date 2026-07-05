@@ -93,8 +93,15 @@ function updateLogic(currentTime){
     enemies.forEach(
         enemy =>{
             const  angleToPlayere  = Math.atan2((player.y-enemy.y),(player.x-enemy.x));
-            enemy.x += Math.cos(angleToPlayere) *enemy.speed; 
-            enemy.y += Math.sin(angleToPlayere) * enemy.speed;
+            enemy.vx += Math.cos(angleToPlayere) *0.05; 
+            enemy.vy += Math.sin(angleToPlayere) * 0.05;
+            const currentSpeed = Math.hypot(enemy.vx,enemy.vy);
+            if(currentSpeed > enemy.maxSpeed){
+                enemy.vx = (enemy.vx/currentSpeed) *enemy.maxSpeed;
+                enemy.vy = (enemy.vy/currentSpeed) * enemy.maxSpeed;
+            }
+            enemy.x+=enemy.vx;
+            enemy.y+=enemy.vy;
         }
     );
     /*
@@ -134,8 +141,10 @@ function updateLogic(currentTime){
                 {
                     x:spawnX,
                     y:spawnY,
+                    vx:0.0,
+                    vy:0.0,
                     radius:12,
-                    speed:1.5,
+                    maxSpeed:1.5,
                     color:"red"
                 }
             );  
@@ -199,7 +208,7 @@ function render(interp){
     ctx.fillRect(0,0,canvas.width,canvas.height);
     stars.forEach(
         star =>{
-            star.alpha+= (Math.random()-0.05)*0.05;
+            star.alpha+= (Math.random()-0.5)*0.05;
             star.alpha = Math.max(0.1,Math.min(1,star.alpha));
             ctx.fillStyle=`rgba(255, 255, 255, ${star.alpha})`;
             ctx.beginPath();
@@ -291,6 +300,7 @@ function resetGame(){
     isGameOver = false;
     enemies = [];
     bullets = [];
+    particles = [];
     lastSpawnTime = performance.now();
     lastTime = performance.now();
     requestAnimationFrame(gameLoop);
