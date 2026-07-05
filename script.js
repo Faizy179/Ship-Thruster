@@ -11,17 +11,22 @@ const player = {
 }
 let  enemies = [];
 let isThrusting = false;
+let isGameOver = false;
 let lastSpacePress = 0;
 let bullets = [];
 let lastShotTime = 0;
 let lastSpawnTime = 0;
 let lastFireTime = 0;
 const SHOOT_COOLDOWN = 700; //0.7 second cooldown
-const SPAWN_COOLDOWN = 1500; //1.5 second cooldown
+const SPAWN_COOLDOWN = 2000; //2 second cooldown
 let keyDownTime = 0;
 document.addEventListener(
     "keydown",(e) => {
         if(e.code === "Space"){
+            if(isGameOver){
+                resetGame()
+                break;
+            }
             if(e.repeat){
                 return;
             }
@@ -128,6 +133,14 @@ function updateLogic(currentTime){
             bullet.y += Math.sin(bullet.angle) * bullet.speed;
         }
     );
+    for (let i = 0; i < bullets.length; i++){
+        const e = enemies[i];
+        const dist = Math.hypot(plqayer.x-e.x,player.y-e.y);
+        if(dist < (player.radius + e.radius)){
+            isGameOver = true;
+            break;
+        }
+    }
     for(let i= bullets.length-1; i>=0; i--){
         for(let j = enemies.length-1; j>=0;j--){
             const b = bullets[i];
@@ -177,6 +190,10 @@ let delta = 0;
 let Fps = 60;
 const timePerFrame = 1000/Fps;
 function gameLoop(currentTime){
+    if(isGameOver){
+        renderGameOver();
+        break;
+    }
     delta+= (currentTime - lastTime) / timePerFrame;
     lastTime = currentTime;
     if(delta > 10){
@@ -189,4 +206,27 @@ function gameLoop(currentTime){
     render(delta);
     requestAnimationFrame(gameLoop);
 }
+function renderGameOver(){
+    ctx.fillStyle = "red";
+    ctx.font = "50px monospace";
+    ctx.textAlign = "center";
+    ctx.fillText("GAME OVER", canvas.width / 2, canvas.height / 2);
+    ctx.fillStyle = "white";
+    ctx.font = "20px monospace";
+    ctx.fillText("Refresh to try again", canvas.width / 2, (canvas.height / 2) + 40);
+}
+function resetGame(){
+    player.x = canvas.width / 2;
+    player.y = canvas.height / 2;
+    player.angle = 0;
+    delta = 0;
+    isThrusting = false
+    isGameOver = false;
+    enemies = [];
+    bullets = [];
+    lastSpawnTime = performance.now();
+    lastTime = performance.now();
+    requestAnimationFrame(gameLoop);
+}
+
 requestAnimationFrame(gameLoop);
