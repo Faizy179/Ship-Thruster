@@ -139,11 +139,7 @@ function updateLogic(currentTime){
         const e = enemies[i];
         const dist = Math.hypot(player.x-e.x,player.y-e.y);
         if(dist < (player.radius + e.radius)){
-            if(enemiesKilled > highScore){
-                highScore = enemiesKilled+1;
-                localStorage.setItem("shipThrusterHighScore",highScore);
-                
-            }
+
             playSound(gameOverSound);
             isGameOver = true;
             break;
@@ -251,6 +247,11 @@ let Fps = 60;
 const timePerFrame = 1000/Fps;
 function gameLoop(currentTime){
     if(isGameOver){
+        if(enemiesKilled > highScore){
+            highScore = enemiesKilled;
+            localStorage.setItem("shipThrusterHighScore",highScore);
+                
+        }
         renderGameOver();
         return;
     }
