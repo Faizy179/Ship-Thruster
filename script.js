@@ -69,9 +69,7 @@ document.addEventListener(
         if(e.code === "Space"){
             isThrusting = false;
             const keyUpTime = performance.now();
-            if(keyUpTime -keyDownTime < 200){
 
-            }
         }
     }
 );
@@ -110,33 +108,6 @@ function updateLogic(currentTime){
             enemy.y+=enemy.vy;
         }
     );
-    /*
-    if((currentTime - lastShotTime) >= SHOOT_COOLDOWN && enemies.length >0){
-        let nearestEnemy = enemies[0];
-        let minDistanc = Infinity;
-        enemies.forEach(
-            enemy => {
-                const dist = Math.hypot(player.x-enemy.x,player.y-enemy.y);
-                if(dist < minDistanc){
-                    minDistanc = dist;
-                    nearestEnemy = enemy;
-                }
-            }
-        );
-        const angleToEnemey = Math.atan2(nearestEnemy.y-player.y, nearestEnemy.x-player.x);
-        bullets.push(
-            {
-                x: player.x,
-                y: player.y,
-                radius: 5,
-                speed:10,
-                angle: angleToEnemey,
-                color: "yellow"
-            }
-        );
-        lastShotTime = currentTime;
-    }
-*/
     if((currentTime-lastSpawnTime) >=SPAWN_COOLDOWN){
         if(enemies.length <maxEnemies){
             const randomAngle = Math.random()*Math.PI*2;
