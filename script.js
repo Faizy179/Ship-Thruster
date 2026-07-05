@@ -11,14 +11,33 @@ const player = {
 }
 let  enemies = [];
 let isThrusting = false;
+let lastSpacePress = 0;
 let bullets = [];
 let lastShotTime = 0;
+let lastSpawnTime = 0;
 const SHOOT_COOLDOWN = 1000; //1 second cooldown
-
+const SPAWN_COOLDOWN = 1500; //1.5 second cooldown
 
 document.addEventListener(
     "keydown",(e) => {
         if(e.code === "Space"){
+            const now = performance.now();
+            if(now - lastSpacePress < 300){
+                bullets.push(
+                    {
+                        x: player.x,
+                        y: player.y,
+                        radius: 5,
+                        speed:10,
+                        angle:player.angle,
+                        color:"yellow"
+                    }
+                );
+                lastSpacePress = 0;
+            }
+            else{
+                lastSpacePress = now;
+            }
             isThrusting = true;
         }
     }
@@ -51,6 +70,7 @@ function updateLogic(currentTime){
             enemy.y += Math.sin(angleToPlayere) * enemy.speed;
         }
     );
+    /*
     if((currentTime - lastShotTime) >= SHOOT_COOLDOWN && enemies.length >0){
         let nearestEnemy = enemies[0];
         let minDistanc = Infinity;
@@ -76,6 +96,23 @@ function updateLogic(currentTime){
         );
         lastShotTime = currentTime;
     }
+*/
+    if((currentTime-lastSpawnTime) >=SPAWN_COOLDOWN){
+        const randomAngle = Math.random()*Math.PI*2;
+        const spawnDistance = 600;
+        const spawnX = (canvas.width/2) + Math.cos(randomAngle) *spawnDistance;
+        const spawnY = (canvas.height/2) + Math.sin(randomAngle)*spawnDistance;
+        enemies.push(
+            {
+                x:spawnX,
+                y:spawnY,
+                radius:12,
+                speed:2,
+                color:"red"
+            }
+        );
+        lastSpawnTime = currentTime;
+    }
     bullets.forEach(
         bullet =>{
             bullet.x += Math.cos(bullet.angle) *bullet.speed;
@@ -94,7 +131,7 @@ function updateLogic(currentTime){
             }
         }
     }
-}
+}lastShotTime
 function render(interp){
     ctx.clearRect(0,0,canvas.width,canvas.height);
     enemies.forEach(
@@ -126,13 +163,11 @@ function render(interp){
     ctx.fill();
     ctx.restore();
 }
-
 let lastTime = performance.now();
 let delta = 0;
 let Fps = 60;
 const timePerFrame = 1000/Fps;
 function gameLoop(currentTime){
-    console.log("Game is running");
     delta+= (currentTime - lastTime) / timePerFrame;
     lastTime = currentTime;
     if(delta > 10){
@@ -145,6 +180,4 @@ function gameLoop(currentTime){
     render(delta);
     requestAnimationFrame(gameLoop);
 }
-
-enemies.push({ x: 50, y: 50, radius: 12, speed: 2, color: "red" });
 requestAnimationFrame(gameLoop);
