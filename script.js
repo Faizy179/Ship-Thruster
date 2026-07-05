@@ -25,7 +25,7 @@ document.addEventListener(
         if(e.code === "Space"){
             if(isGameOver){
                 resetGame()
-                break;
+                return;
             }
             if(e.repeat){
                 return;
@@ -133,9 +133,9 @@ function updateLogic(currentTime){
             bullet.y += Math.sin(bullet.angle) * bullet.speed;
         }
     );
-    for (let i = 0; i < bullets.length; i++){
+    for (let i = 0; i < enemies.length; i++){
         const e = enemies[i];
-        const dist = Math.hypot(plqayer.x-e.x,player.y-e.y);
+        const dist = Math.hypot(player.x-e.x,player.y-e.y);
         if(dist < (player.radius + e.radius)){
             isGameOver = true;
             break;
@@ -192,7 +192,7 @@ const timePerFrame = 1000/Fps;
 function gameLoop(currentTime){
     if(isGameOver){
         renderGameOver();
-        break;
+        return;
     }
     delta+= (currentTime - lastTime) / timePerFrame;
     lastTime = currentTime;
@@ -213,12 +213,13 @@ function renderGameOver(){
     ctx.fillText("GAME OVER", canvas.width / 2, canvas.height / 2);
     ctx.fillStyle = "white";
     ctx.font = "20px monospace";
-    ctx.fillText("Refresh to try again", canvas.width / 2, (canvas.height / 2) + 40);
+    ctx.fillText("press SPACE to try again", canvas.width / 2, (canvas.height / 2) + 40);
 }
 function resetGame(){
     player.x = canvas.width / 2;
     player.y = canvas.height / 2;
     player.angle = 0;
+
     delta = 0;
     isThrusting = false
     isGameOver = false;
