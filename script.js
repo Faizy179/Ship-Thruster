@@ -30,6 +30,7 @@ let highScore = localStorage.getItem("shipThrusterHighScore") || 0;
 const shootSound = new Audio ("shoot.mp3");
 const boomSound = new Audio ("bangSmall.wav");
 const gameOverSound  = new Audio("gameOver.mp3");
+shootSound.volume = 0.2;
 for(let i = 0; i < 100; i++) {
     stars.push({
         x: Math.random() * canvas.width,
