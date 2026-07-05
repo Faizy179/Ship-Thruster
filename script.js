@@ -26,6 +26,7 @@ let keyDownTime = 0;
 let particles = [];
 const stars = [];
 const HITBOX_INCREASE = 8;
+let highScore = localStorage.getItem("shipThrusterHighScore") || 0;
 
 for(let i = 0; i < 100; i++) {
     stars.push({
@@ -164,6 +165,10 @@ function updateLogic(currentTime){
         const e = enemies[i];
         const dist = Math.hypot(player.x-e.x,player.y-e.y);
         if(dist < (player.radius + e.radius)){
+            if(enemiesKilled > highScore){
+                highScore = enemiesKilled+1;
+                localStorage.setItem("shipThrusterHighScore",highScore);
+            }
             isGameOver = true;
             break;
         }
@@ -260,6 +265,8 @@ function render(interp){
     ctx.font = "20px monospace";
     ctx.textAlign = "left";
     ctx.fillText("SCORE: " +enemiesKilled,20,40);
+    ctx.fillStyle = "gold";
+    ctx.fillText("HIGH SCORE: " + highScore,20,70);
 }
 let lastTime = performance.now();
 let delta = 0;
