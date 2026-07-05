@@ -20,7 +20,7 @@ let lastFireTime = 0;
 let enemiesKilled = 0;
 let maxEnemies = 3;
 const SHOOT_COOLDOWN = 700; //0.7 second cooldown
-const SPAWN_COOLDOWN = 2000; //2 second cooldown
+const SPAWN_COOLDOWN = 2500; //2.5 second cooldown
 let keyDownTime = 0;
 let particles = [];
 const stars = [];
@@ -43,7 +43,16 @@ document.addEventListener(
             if(e.repeat){
                 return;
             }
-            keyDownTime = performance.now();
+            bullets.push({
+                x: player.x,
+                y: player.y,
+                radius: 5,
+                speed: 10,
+                angle: player.angle, 
+                color: "yellow"
+            }
+             );
+            lastFireTime = performance.now();
             isThrusting = true; 
         }
     }
@@ -55,16 +64,7 @@ document.addEventListener(
             isThrusting = false;
             const keyUpTime = performance.now();
             if(keyUpTime -keyDownTime < 200){
-                bullets.push({
-                    x: player.x,
-                    y: player.y,
-                    radius: 5,
-                    speed: 10,
-                    angle: player.angle, 
-                    color: "yellow"
-                }
-             );
-             lastFireTime = performance.now();
+
             }
         }
     }
