@@ -17,6 +17,8 @@ let bullets = [];
 let lastShotTime = 0;
 let lastSpawnTime = 0;
 let lastFireTime = 0;
+let enemiesKilled = 0;
+let maxEnemies = 3;
 const SHOOT_COOLDOWN = 700; //0.7 second cooldown
 const SPAWN_COOLDOWN = 2000; //2 second cooldown
 let keyDownTime = 0;
@@ -112,19 +114,22 @@ function updateLogic(currentTime){
     }
 */
     if((currentTime-lastSpawnTime) >=SPAWN_COOLDOWN){
-        const randomAngle = Math.random()*Math.PI*2;
-        const spawnDistance = 600;
-        const spawnX = (canvas.width/2) + Math.cos(randomAngle) *spawnDistance;
-        const spawnY = (canvas.height/2) + Math.sin(randomAngle)*spawnDistance;
-        enemies.push(
-            {
-                x:spawnX,
-                y:spawnY,
-                radius:12,
-                speed:1.5,
-                color:"red"
-            }
-        );
+        if(enemies.length <maxEnemies){
+            const randomAngle = Math.random()*Math.PI*2;
+            const spawnDistance = 600;
+            const spawnX = (canvas.width/2) + Math.cos(randomAngle) *spawnDistance;
+            const spawnY = (canvas.height/2) + Math.sin(randomAngle)*spawnDistance;
+            enemies.push(
+                {
+                    x:spawnX,
+                    y:spawnY,
+                    radius:12,
+                    speed:1.5,
+                    color:"red"
+                }
+            );  
+        }
+
         lastSpawnTime = currentTime;
     }
     bullets.forEach(
@@ -149,6 +154,8 @@ function updateLogic(currentTime){
             if(dist < b.radius+e.radius){
                 bullets.splice(i,1);
                 enemies.splice(j,1);
+                enemiesKilled++;
+                maxEnemies = 3 +Math.floor(enemiesKilled/5);//max enemies increases by one per five enemies killed
                 break;
             }
         }
@@ -219,7 +226,8 @@ function resetGame(){
     player.x = canvas.width / 2;
     player.y = canvas.height / 2;
     player.angle = 0;
-
+    enemiesKilled = 0;
+    maxEnemies = 3;
     delta = 0;
     isThrusting = false
     isGameOver = false;
