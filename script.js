@@ -6,7 +6,7 @@ const player = {
     radius:15,
     speed:5,
     angle:0,
-    spinSpeed:0.05,
+    spinSpeed:0.04,
     color:"cyan"
 }
 let  enemies = [];
@@ -15,7 +15,8 @@ let lastSpacePress = 0;
 let bullets = [];
 let lastShotTime = 0;
 let lastSpawnTime = 0;
-const SHOOT_COOLDOWN = 1000; //1 second cooldown
+let lastFireTime = 0;
+const SHOOT_COOLDOWN = 700; //1 second cooldown
 const SPAWN_COOLDOWN = 1500; //1.5 second cooldown
 let keyDownTime = 0;
 document.addEventListener(
@@ -45,6 +46,7 @@ document.addEventListener(
                     color: "yellow"
                 }
              );
+             lastFireTime = performance.now();
             }
         }
     }
@@ -55,7 +57,7 @@ function updateLogic(currentTime){
         player.x += Math.cos(player.angle) * player.speed;
         player.y += Math.sin(player.angle) *player.speed;
     }
-    else{
+    else if(currentTime-lastFireTime > 200){
         player.angle+=player.spinSpeed
     }
     player.x = Math.max(player.radius,Math.min(canvas.width-player.radius,player.x)); 
