@@ -1,5 +1,6 @@
 const canvas = document.getElementById("main-canvas");
 const ctx = canvas.getContext("2d");
+
 const player = {
     x: canvas.width/2,
     y:canvas.height/2,
@@ -24,6 +25,7 @@ const SPAWN_COOLDOWN = 2500; //2.5 second cooldown
 let keyDownTime = 0;
 let particles = [];
 const stars = [];
+const HITBOX_INCREASE = 8;
 
 for(let i = 0; i < 100; i++) {
     stars.push({
@@ -171,7 +173,7 @@ function updateLogic(currentTime){
             const b = bullets[i];
             const e = enemies[j];
             const dist = Math.hypot(b.x-e.x,b.y-e.y);
-            if(dist < b.radius+e.radius){
+            if(dist < b.radius+e.radius + HITBOX_INCREASE){
                 for(let k =0; k <15; k++){
                     particles.push(
                         {
@@ -257,7 +259,7 @@ function render(interp){
     ctx.fillStyle = "white";
     ctx.font = "20px monospace";
     ctx.textAlign = "left";
-    ctx.fillText("SORE: " +enemiesKilled,20,40);
+    ctx.fillText("SCORE: " +enemiesKilled,20,40);
 }
 let lastTime = performance.now();
 let delta = 0;
