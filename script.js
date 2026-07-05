@@ -27,7 +27,9 @@ let particles = [];
 const stars = [];
 const HITBOX_INCREASE = 8;
 let highScore = localStorage.getItem("shipThrusterHighScore") || 0;
-
+const shootSound = new Audio ("shoot.mp3");
+const boomSound = new Audio ("bangSmall.wav");
+const gameOverSound  = new Audio("gameOver.mp3");
 for(let i = 0; i < 100; i++) {
     stars.push({
         x: Math.random() * canvas.width,
@@ -55,6 +57,7 @@ document.addEventListener(
                 color: "yellow"
             }
              );
+             playSound(shootSound);
             lastFireTime = performance.now();
             isThrusting = true; 
         }
@@ -168,7 +171,9 @@ function updateLogic(currentTime){
             if(enemiesKilled > highScore){
                 highScore = enemiesKilled+1;
                 localStorage.setItem("shipThrusterHighScore",highScore);
+                
             }
+            playSound(gameOverSound);
             isGameOver = true;
             break;
         }
@@ -195,6 +200,7 @@ function updateLogic(currentTime){
                 enemies.splice(j,1);
                 enemiesKilled++;
                 maxEnemies = 3 +Math.floor(enemiesKilled/5);//max enemies increases by one per five enemies killed
+                playSound(boomSound);
                 break;
             }
         }
@@ -314,5 +320,8 @@ function resetGame(){
     lastTime = performance.now();
     requestAnimationFrame(gameLoop);
 }
-
+function playSound(sound){
+    sound.currentTime = 0;
+    sound.play();
+}
 requestAnimationFrame(gameLoop);
