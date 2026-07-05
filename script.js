@@ -199,8 +199,8 @@ function render(interp){
     ctx.fillRect(0,0,canvas.width,canvas.height);
     stars.forEach(
         star =>{
-            star.alpha+= (Math.random()-0.05)*5;
-            star.alpha += Math.max(0.1,Math.min(1,star.alpha));
+            star.alpha+= (Math.random()-0.05)*0.05;
+            star.alpha = Math.max(0.1,Math.min(1,star.alpha));
             ctx.fillStyle=`rgba(255, 255, 255, ${star.alpha})`;
             ctx.beginPath();
             ctx.arc(star.x,star.y,star.radius,0,Math.PI*2);
@@ -217,7 +217,6 @@ function render(interp){
         }
     );
     ctx.globalAlpha=1;
-    ctx.clearRect(0,0,canvas.width,canvas.height);
     enemies.forEach(
         enemy => {
             ctx.fillStyle = enemy.color;
