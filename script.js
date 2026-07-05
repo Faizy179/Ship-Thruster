@@ -22,6 +22,17 @@ let maxEnemies = 3;
 const SHOOT_COOLDOWN = 700; //0.7 second cooldown
 const SPAWN_COOLDOWN = 2000; //2 second cooldown
 let keyDownTime = 0;
+let particles = [];
+const stars = [];
+
+for(let i = 0; i < 100; i++) {
+    stars.push({
+        x: Math.random() * canvas.width,
+        y: Math.random() * canvas.height,
+        radius: Math.random() * 1.5, // Tiny dots
+        alpha: Math.random() // Random starting brightness
+    });
+}
 document.addEventListener(
     "keydown",(e) => {
         if(e.code === "Space"){
@@ -33,7 +44,7 @@ document.addEventListener(
                 return;
             }
             keyDownTime = performance.now();
-            isThrusting = true;
+            isThrusting = true; 
         }
     }
 );
@@ -152,6 +163,18 @@ function updateLogic(currentTime){
             const e = enemies[j];
             const dist = Math.hypot(b.x-e.x,b.y-e.y);
             if(dist < b.radius+e.radius){
+                for(let k =0; k <15; k++){
+                    particles.push(
+                        {
+                            x: e.x,
+                            y:e.y,
+                            vx:(Math.random()-0.5)*5,
+                            vy: (Math.random()-0.5)*5,
+                            life: 1.0,
+                            color:e.color
+                        }
+                    );
+                }
                 bullets.splice(i,1);
                 enemies.splice(j,1);
                 enemiesKilled++;
@@ -160,8 +183,40 @@ function updateLogic(currentTime){
             }
         }
     }
+    for(let i = particles.length-1; i >= 0; i--){
+        let p = particles[i];
+        p.x+=p.vx;
+        p.y+=p.vy;
+
+        p.life-=0.02;
+        if(p.life <= 0){
+            particles.splice(i,1);
+        }
+    }
 }
 function render(interp){
+    ctx.fillStyle = "black";
+    ctx.fillRect(0,0,canvas.width,canvas.height);
+    stars.forEach(
+        star =>{
+            star.alpha+= (Math.random()-0.05)*5;
+            star.alpha += Math.max(0.1,Math.min(1,star.alpha));
+            ctx.fillStyle=`rgba(255, 255, 255, ${star.alpha})`;
+            ctx.beginPath();
+            ctx.arc(star.x,star.y,star.radius,0,Math.PI*2);
+            ctx.fill();
+        }
+    );
+    particles.forEach(
+        particle =>{
+            ctx.globalAlpha = Math.max(0,particle.life);
+            ctx.fillStyle = particle.color;
+            ctx.beginPath();
+            ctx.arc(particle.x,particle.y,2,0,Math.PI*2);
+            ctx.fill();
+        }
+    );
+    ctx.globalAlpha=1;
     ctx.clearRect(0,0,canvas.width,canvas.height);
     enemies.forEach(
         enemy => {
@@ -191,6 +246,10 @@ function render(interp){
     ctx.closePath();
     ctx.fill();
     ctx.restore();
+    ctx.fillStyle = "white";
+    ctx.font = "20px monospace";
+    ctx.textAlign = "left";
+    ctx.fillText("SORE: " +enemiesKilled,20,40);
 }
 let lastTime = performance.now();
 let delta = 0;
